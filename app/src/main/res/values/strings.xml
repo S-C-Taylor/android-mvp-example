@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">example</string>
+    <string name="user_ip_address">IP Address</string>
+    <string name="user_first_name">First Name</string>
+    <string name="user_first_name_default">None</string>
+    <string name="user_last_name">Last Name</string>
+    <string name="user_last_name_default">None</string>
+    <string name="user_gender">Gender</string>
+    <string name="user_gender_default">None</string>
+    <string name="user_email">Email</string>
+    <string name="user_email_default">None</string>
+    <string name="user_ip_address_default">None</string>
+    <string name="button_text_load_user">Load User</string>
+</resources>
