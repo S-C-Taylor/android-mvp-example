@@ -10,6 +10,8 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class User {
 
     @SerializedName("id")
@@ -33,6 +35,8 @@ public class User {
     @SerializedName("image")
     @Expose
     private String image;
+    @SerializedName("emails")
+    private List<Email> emails;
 
     public Integer getId() {
         return id;
@@ -90,9 +94,17 @@ public class User {
         this.image = image;
     }
 
+    public List<Email> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(List<Email> emails) {
+        this.emails = emails;
+    }
+
     @Override
     public String toString() {
-        return "Customer{" +
+        return "User{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
@@ -100,6 +112,7 @@ public class User {
                 ", gender='" + gender + '\'' +
                 ", ipAddress='" + ipAddress + '\'' +
                 ", image='" + image + '\'' +
+                ", emails=" + emails +
                 '}';
     }
 

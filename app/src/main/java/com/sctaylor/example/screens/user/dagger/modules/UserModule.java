@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import com.sctaylor.example.application.network.ExampleService;
 import com.sctaylor.example.screens.user.UserActivity;
 import com.sctaylor.example.screens.user.core.UserContract;
+import com.sctaylor.example.screens.user.core.UserEmailAdapter;
+import com.sctaylor.example.screens.user.core.UserEmailItemListener;
 import com.sctaylor.example.screens.user.core.UserPresenter;
 import com.sctaylor.example.screens.user.dagger.scopes.UserActivityScope;
 import dagger.Module;
@@ -26,6 +28,18 @@ public class UserModule {
     @Provides
     public UserContract.UserView provideUserView(UserActivity userActivity) {
         return userActivity;
+    }
+
+    @UserActivityScope
+    @Provides
+    public UserEmailAdapter provideUserEmailAdapter(UserPresenter presenter, UserEmailItemListener listener) {
+        return new UserEmailAdapter(presenter, listener);
+    }
+
+    @UserActivityScope
+    @Provides
+    public UserEmailItemListener provideUserEmailItemListener(UserActivity view) {
+        return (UserEmailItemListener) view;
     }
 
 }

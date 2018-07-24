@@ -1,17 +1,25 @@
 package com.sctaylor.example.screens.user;
 
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.sctaylor.example.R;
 import com.sctaylor.example.application.ExampleApplication;
 import com.sctaylor.example.application.network.ExampleService;
+import com.sctaylor.example.models.Email;
 import com.sctaylor.example.screens.user.core.UserContract;
+import com.sctaylor.example.screens.user.core.UserEmailAdapter;
+import com.sctaylor.example.screens.user.core.UserEmailItemListener;
 import com.sctaylor.example.screens.user.core.UserPresenter;
 import com.sctaylor.example.screens.user.dagger.components.DaggerUserActivityComponent;
 import com.sctaylor.example.screens.user.dagger.components.UserActivityComponent;
@@ -24,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class UserActivity extends AppCompatActivity implements UserContract.UserView {
+public class UserActivity extends AppCompatActivity implements UserContract.UserView, UserEmailItemListener {
 
     @BindView(R.id.textViewFirstNameValue)
     TextView firstNameValue;
@@ -43,6 +51,9 @@ public class UserActivity extends AppCompatActivity implements UserContract.User
     @BindView(R.id.buttonLoadUser)
     Button buttonLoadUser;
 
+    @BindView(R.id.recyclerViewEmails)
+    RecyclerView recyclerEmail;
+
     @Inject
     ExampleService exampleService;
 
@@ -51,6 +62,9 @@ public class UserActivity extends AppCompatActivity implements UserContract.User
 
     @Inject
     UserPresenter presenter;
+
+    @Inject
+    UserEmailAdapter emailAdapter;
 
     private KProgressHUD hudLoader;
 
@@ -85,13 +99,43 @@ public class UserActivity extends AppCompatActivity implements UserContract.User
                 .setCancellable(true)
                 .setAnimationSpeed(2)
                 .setDimAmount(0.5f);
+
+        recyclerEmail.setAdapter(emailAdapter);
+
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setAutoMeasureEnabled(false);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+
+
+        recyclerEmail.setLayoutManager(llm);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerEmail.getContext(), llm.getOrientation());
+        recyclerEmail.addItemDecoration(dividerItemDecoration);
+
+        emailAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void updateEmailList() {
+        emailAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void itemClicked(int position) {
+        Email email = presenter.getEmail(position);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(email.getSender());
+
+        builder.setMessage(email.getContent());
+
+        builder.show();
+    }
 
     @Override
     public void setFirstName(String firstName) {
         firstNameValue.setText(firstName);
-
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.sctaylor.example.screens.user.core;
 
+import com.sctaylor.example.models.Email;
+
 /**
  * Created by simon on 7/11/2018.
  */
@@ -8,6 +10,9 @@ public interface UserContract {
 
     interface UserPresenter {
         void loadUser();
+        int getEmailCount();
+        void setEmailItem(EmailItemHolder holder, int position);
+        Email getEmail(int position);
     }
 
     interface UserView {
@@ -19,5 +24,11 @@ public interface UserContract {
         void setImage(String imageUrl);
         void showProgress();
         void hideProgress();
+        void updateEmailList();
+    }
+
+    interface EmailItemHolder {
+        void setSender(String sender);
+        void setContent(String content);
     }
 }

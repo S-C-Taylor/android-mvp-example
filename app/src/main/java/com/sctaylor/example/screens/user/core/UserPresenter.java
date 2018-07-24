@@ -1,8 +1,12 @@
 package com.sctaylor.example.screens.user.core;
 
 import com.sctaylor.example.application.network.ExampleService;
+import com.sctaylor.example.models.Email;
 import com.sctaylor.example.models.User;
 import com.sctaylor.example.mvp.BasePresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -16,6 +20,7 @@ import timber.log.Timber;
 public class UserPresenter extends BasePresenter<UserContract.UserView> implements UserContract.UserPresenter {
 
     private ExampleService service;
+    private List<Email> emailList = new ArrayList<Email>();
 
 
     public UserPresenter(UserContract.UserView view, ExampleService service) {
@@ -25,9 +30,14 @@ public class UserPresenter extends BasePresenter<UserContract.UserView> implemen
     }
 
     @Override
+    public Email getEmail(int position) {
+        return emailList.get(position);
+    }
+
+    @Override
     public void loadUser() {
 
-        getView().showProgress();
+        view.showProgress();
 
         addDisposable(service.getUser()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -36,21 +46,38 @@ public class UserPresenter extends BasePresenter<UserContract.UserView> implemen
                     @Override
                     public void accept(User user) throws Exception {
                         Timber.tag("User").i("Successfully got user: " + user.toString());
-                        getView().setFirstName(user.getFirstName());
-                        getView().setLastName(user.getLastName());
-                        getView().setEmail(user.getEmail());
-                        getView().setGender(user.getGender());
-                        getView().setIPAddress(user.getIpAddress());
-                        getView().setImage(user.getImage());
+                        view.setFirstName(user.getFirstName());
+                        view.setLastName(user.getLastName());
+                        view.setEmail(user.getEmail());
+                        view.setGender(user.getGender());
+                        view.setIPAddress(user.getIpAddress());
+                        view.setImage(user.getImage());
 
-                        getView().hideProgress();
+                        emailList.clear();
+                        emailList.addAll(user.getEmails());
+                        view.updateEmailList();
+
+                        view.hideProgress();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         Timber.tag("User").e(throwable);
-                        getView().hideProgress();
+                        view.hideProgress();
                     }
                 }));
+    }
+
+    @Override
+    public void setEmailItem(UserContract.EmailItemHolder holder, int position) {
+        Email email = emailList.get(position);
+
+        holder.setContent(email.getContent());
+        holder.setSender(email.getSender());
+    }
+
+    @Override
+    public int getEmailCount() {
+        return emailList.size();
     }
 }
