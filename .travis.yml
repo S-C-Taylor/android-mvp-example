@@ -6,6 +6,8 @@ android:
     - tools
     - extra
 
+    - build-tools-26.0.2
+
     # The SDK version used to compile your project
     - android-26
 
